@@ -1,0 +1,43 @@
+ @import "tailwindcss";
+
+
+ body {
+  margin: 0;
+}
+
+
+.perspective-1000 { perspective: 1000px; }
+.preserve-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; }
+.rotate-y-180 { transform: rotateY(180deg); }
+
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0.2;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.heading{ 
+  font-family: "Roboto flex" , sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+}
+
+.button{
+  background: rgba(0, 0, 0, 1);
+  backdrop-filter: blur(10px);
+}
