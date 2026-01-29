@@ -195,7 +195,7 @@ const CourseSelection = ({ user, db }) => {
                 onClick={() => navigate(`/courses/${course.id}`)}
                 className={`group cursor-pointer ${course.backgroundColor} h-45 p-6 rounded-4xl hover:shadow-2xl hover:-translate-y-1 transition-all flex flex-col justify-between`}
               >
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform bg-white/10">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ">
                   {React.cloneElement(course.icon, { size: 28, className: 'text-gray-800' })}
                 </div>
                 <h3 className="text-xl font-['Roboto Flex'] font-bold text-gray-900">{course.name}</h3>

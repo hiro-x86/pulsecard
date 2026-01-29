@@ -127,11 +127,11 @@ const App = () => {
           element={<ProtectedRoute user={user}><TopicSelection user={user} /></ProtectedRoute>} 
         />
         <Route 
-          path="/Flashcards/:topicId" 
+          path="/flashcard/:courseId/:topicId" 
           element={<ProtectedRoute user={user}><Flashcard user={user} /></ProtectedRoute>}
         />
         <Route 
-          path="/add-flashcard/:topicId" 
+          path="/add-flashcard/:courseId/:topicId" 
           element={<ProtectedRoute user={user}><AddFlashcard user={user} /></ProtectedRoute>} 
         />
 

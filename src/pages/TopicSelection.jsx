@@ -84,7 +84,7 @@ const TopicSelection = () => {
                 {topics.map((topic) => (
                   <button
                     key={topic.id}
-                    onClick={() => navigate(`/flashcards/${topic.id}`)} 
+                    onClick={() => navigate(`/flashcard/${courseId}/${topic.id}`)} 
                     className="flex items-center justify-between p-5 bg-white  rounded-xl shadow-sm hover:border-blue-400 hover:shadow-md transition-all group text-left"
                   >
                     <div>

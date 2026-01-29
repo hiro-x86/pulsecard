@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { db } from '../firebase';
+import { db} from '../firebase'; // Ensure storage is exported from your firebase.js
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { ArrowLeft, Save, Type, FileText } from 'lucide-react';
-
-const COLORS = [
-  { id: 'blue', value: 'bg-yellow-200', label: 'Easy' },
-  { id: 'red', value: 'bg-red-400', label: 'Difficult' }, 
-  { id: 'emerald', value: 'bg-emerald-200', label: 'Medium' },
-];
+// New imports
+import { ArrowLeft, Save, Type, FileText, Image as ImageIcon, X } from 'lucide-react';
 
 const CreateFlashcard = () => {
-  const { topicId } = useParams(); 
+  const { topicId, courseId } = useParams(); 
   const navigate = useNavigate();
   
   const [front, setFront] = useState('');
   const [back, setBack] = useState('');
-  const [selectedColor, setSelectedColor] = useState(COLORS[0]);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Handle image selection
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -25,23 +30,37 @@ const CreateFlashcard = () => {
 
     setLoading(true);
     try {
-      // 1. Reference the specific Topic's subcollection
-      // Note: Adjust "topics" collection path based on your exact Firestore structure
-      const cardsRef = collection(db, "Flashcards");
+      let imageUrl = null;
 
-      // 2. Add the new card
+      // 1. Upload Image if one is selected
+     if (imageFile) {
+      const formData = new FormData();
+      formData.append('file', imageFile);
+      formData.append('upload_preset', 'flashcard-img'); // Replace this
+      
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/dhhqqung3/image/upload`, // Replace Cloud Name
+        { method: 'POST', body: formData }
+      );
+      const data = await response.json();
+      imageUrl = data.secure_url; // This is the link to your image
+    }
+
+      // 2. Save to Firestore
+      const cardsRef = collection(db, "Flashcards");
       await addDoc(cardsRef, {
-        question: front,        // FIX: Match the field name "question" used in your display page
-        answer: back,          // Match field name "answer"
-        topic: topicId,        // This is the link that allows the filter to work
-        color: selectedColor.value,
+        question: front,
+        answer: back,
+        imageUrl: imageUrl, // Save the link here
+        topic: topicId, 
+        courseId: courseId,
+        color: 'bg-white', // Defaulting to white for better image visibility
         createdAt: serverTimestamp(),
       });
 
-      // 3. Go back to the previous page
       navigate(-1); 
     } catch (error) {
-      console.error("Error adding card:", error);
+      console.error("Error:", error);
       alert("Could not save card.");
     } finally {
       setLoading(false);
@@ -49,79 +68,49 @@ const CreateFlashcard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-gray-950 p-6 flex flex-col items-center">
-      
-      {/* Header */}
+    <div className="min-h-screen bg-[#FAFAFA] p-6 flex flex-col items-center">
       <div className="w-full max-w-2xl flex items-center justify-between mb-8">
-        <button onClick={() => navigate(-1)} className="p-2 bg-transparent rounded-full">
-          <ArrowLeft size={24} />
-        </button>
-        <h1 className="text-xl font-bold">Add card</h1>
-        <div className="w-10"></div> {/* Spacer for alignment */}
+        <button onClick={() => navigate(-1)}><ArrowLeft /></button>
+        <h1 className="text-xl font-bold">Add Medical Card</h1>
+        <div className="w-10"></div>
       </div>
 
       <form onSubmit={handleSave} className="w-full max-w-2xl space-y-6">
-        
-        {/* Card Preview (Visual Feedback) */}
-        <div className={`w-full h-48 rounded-2xl ${selectedColor.value} flex items-center justify-center p-6 shadow-2xl transition-colors duration-500`}>
-          <p className="text-center font-serif text-2xl font-medium opacity-90 wrap-break-word w-full">
-            {front || "Front Side Preview"}
-          </p>
-        </div>
-
-        {/* Inputs */}
-        <div className="space-y-4">
-          <div className="bg-white/50 p-4 rounded-2xl border border-slate-800 focus-within:border-blue-500 transition-colors">
-            <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase mb-2">
-              <Type size={14} /> Front (Question)
-            </label>
-            <input 
-              value={front}
-              onChange={(e) => setFront(e.target.value)}
-              className="w-full bg-transparent text-lg outline-none placeholder-slate-600"
-              placeholder="e.g. Origin of the Deltoid?"
-              autoFocus
-            />
-          </div>
-
-          <div className="bg-white/50 p-4 rounded-2xl border border-slate-800 focus-within:border-blue-500 transition-colors">
-            <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase mb-2">
-              <FileText size={14} /> Back (Answer)
-            </label>
-            <textarea 
-              value={back}
-              onChange={(e) => setBack(e.target.value)}
-              className="w-full bg-transparent text-lg outline-none placeholder-slate-600 resize-none h-24"
-              placeholder="Lateral third of clavicle..."
-            />
-          </div>
-        </div>
-
-        {/* Color Selection */}
-        <div>
-          <label className="text-xs font-bold text-slate-500 uppercase mb-3 block">Card Color</label>
-          <div className="flex gap-4">
-            {COLORS.map((c) => (
-              <button
-                key={c.id}
+        {/* Image Upload Section */}
+        <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl p-4 bg-white">
+          {imagePreview ? (
+            <div className="relative w-full h-48">
+              <img src={imagePreview} className="w-full h-full object-contain rounded-lg" alt="Preview" />
+              <button 
                 type="button"
-                onClick={() => setSelectedColor(c)}
-                className={`w-12 h-12 rounded-full ${c.value} transition-transform ${selectedColor.id === c.id ? 'ring-4 ring-white scale-110' : 'opacity-60 hover:opacity-100'}`}
-                title={c.label}
-              />
-            ))}
-          </div>
+                onClick={() => {setImageFile(null); setImagePreview(null);}}
+                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          ) : (
+            <label className="flex flex-col items-center cursor-pointer py-8">
+              <ImageIcon size={40} className="text-gray-400 mb-2" />
+              <span className="text-sm text-gray-500 font-medium">Add Diagram/Image</span>
+              <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+            </label>
+          )}
         </div>
 
-        {/* Save Button */}
-        <button 
-          type="submit" 
-          disabled={loading}
-          className="w-full py-4 bg-blue-500 text-white font-bold rounded-2xl hover:bg-slate-200 transition-colors flex items-center justify-center gap-2 mt-8 disabled:opacity-50"
-        >
-          {loading ? 'Saving...' : <><Save size={20} /> Create Card</>}
-        </button>
+        <div className="bg-white p-4 rounded-2xl border border-gray-200">
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-widest"><Type size={12}/> Front</label>
+          <input value={front} onChange={(e) => setFront(e.target.value)} className="w-full p-2 outline-none text-lg" placeholder="Question..." />
+        </div>
 
+        <div className="bg-white p-4 rounded-2xl border border-gray-200">
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-widest"><FileText size={12}/> Back</label>
+          <textarea value={back} onChange={(e) => setBack(e.target.value)} className="w-full p-2 outline-none text-lg resize-none h-24" placeholder="Answer..." />
+        </div>
+
+        <button type="submit" disabled={loading} className="w-full py-4 bg-blue-500 text-white font-bold rounded-2xl">
+          {loading ? 'Uploading...' : 'Create Card'}
+        </button>
       </form>
     </div>
   );

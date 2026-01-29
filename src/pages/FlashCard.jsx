@@ -5,7 +5,7 @@ import { collection, query, where, getDocs, doc, updateDoc, increment } from 'fi
 import { Plus,ArrowLeft } from 'lucide-react';
 
 const Flashcard = ({ user }) => { // 1. Receive User Prop
-  const { topicId } = useParams();
+  const { topicId, courseId } = useParams();
   const navigate = useNavigate(); 
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -49,8 +49,7 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
     const lastStudyDate = user.lastStudyDate;
     
     // Normalize courseId to match: anatomy, physiology, or biochemistry
-    const rawCourseId = cards[currentIndex].courseId || "anatomy";
-    const courseKey = rawCourseId.toLowerCase().trim();
+    const courseKey = courseId.toLowerCase().trim();
 
     let streakUpdate = {};
     if (lastStudyDate !== today) {
@@ -68,7 +67,7 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
     try {
       await updateDoc(userRef, {
         totalCardsRead: increment(1),
-        [`dailyProgress.${courseKey}`]: increment(1), // Key must match 'anatomy', etc.
+        [`dailyProgress.${courseKey}`]: increment(1),
         lastStudyDate: today,
         ...streakUpdate
       });
@@ -111,6 +110,15 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
           >
             <div className={`relative w-full h-full transition-all duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
               <div className={`absolute inset-0 ${currentCard.color} shadow-2xl  flex items-center justify-center p-8 backface-hidden `}>
+                {currentCard.imageUrl && (
+                  <div className="w-full h-40 mb-4 overflow-hidden rounded-lg">
+                    <img 
+                        src={currentCard.imageUrl} 
+                        alt="diagram" 
+                        className="w-full h-full object-contain" 
+                    />
+                  </div>
+                )}
                 <p className="text-[18px] md:text-2xl text-center font-bold text-black">{currentCard.question}</p>
                 <p className="absolute bottom-4 text-xs text-slate-400 font-bold uppercase tracking-widest">Tap to Flip</p>
               </div>
@@ -142,7 +150,7 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
       <button
         onClick={(e) => {
           e.stopPropagation();
-          navigate(`/add-flashcard/${topicId}`);
+          navigate(`/add-flashcard/${courseId}/${topicId}`);
         }}
         className="fixed top-5 right-2 w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-1000"
       >
