@@ -97,7 +97,7 @@ const App = () => {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#FAFAFA] text-gray-950">
+      <div className="h-screen flex items-center justify-center bg-[#050505] text-white">
         Loading...
       </div>
     );

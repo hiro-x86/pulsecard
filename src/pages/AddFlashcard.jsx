@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { db} from '../firebase'; // Ensure storage is exported from your firebase.js
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 // New imports
-import { ArrowLeft, Save, Type, FileText, Image as ImageIcon, X } from 'lucide-react';
+import { ChevronLeft, Save, Type, FileText, Image as ImageIcon, X } from 'lucide-react';
 
 const CreateFlashcard = () => {
   const { topicId, courseId } = useParams(); 
@@ -39,7 +39,7 @@ const CreateFlashcard = () => {
       formData.append('upload_preset', 'flashcard-img'); // Replace this
       
       const response = await fetch(
-        `https://api.cloudinary.com/v1_1/dhhqqung3/image/upload`, // Replace Cloud Name
+        `https://api.cloudinary.com/v1_1/dhhqqung3/image/upload`, 
         { method: 'POST', body: formData }
       );
       const data = await response.json();
@@ -51,10 +51,10 @@ const CreateFlashcard = () => {
       await addDoc(cardsRef, {
         question: front,
         answer: back,
-        imageUrl: imageUrl, // Save the link here
+        imageUrl: imageUrl, 
         topic: topicId, 
         courseId: courseId,
-        color: 'bg-white', // Defaulting to white for better image visibility
+        color: 'bg-white', 
         createdAt: serverTimestamp(),
       });
 
@@ -68,16 +68,16 @@ const CreateFlashcard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] p-6 flex flex-col items-center">
+    <div className="min-h-screen bg-[#050505] p-6 flex flex-col items-center">
       <div className="w-full max-w-2xl flex items-center justify-between mb-8">
-        <button onClick={() => navigate(-1)}><ArrowLeft /></button>
-        <h1 className="text-xl font-bold">Add Medical Card</h1>
+        <button onClick={() => navigate(-1)}><ChevronLeft size={40} className="text-gray-100 bg-[#171717] border border-white/10 shadow-xl rounded-full p-2" /></button>
+        <h1 className="text-xl text-white font-bold">Add Card</h1>
         <div className="w-10"></div>
       </div>
 
       <form onSubmit={handleSave} className="w-full max-w-2xl space-y-6">
         {/* Image Upload Section */}
-        <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl p-4 bg-white">
+        <div className="flex flex-col  items-center justify-center border-2 border-dashed border-white/10  rounded-2xl p-4 bg-[#171717]">
           {imagePreview ? (
             <div className="relative w-full h-48">
               <img src={imagePreview} className="w-full h-full object-contain rounded-lg" alt="Preview" />
@@ -98,17 +98,17 @@ const CreateFlashcard = () => {
           )}
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-gray-200">
+        <div className="bg-[#171717] p-4 rounded-2xl border border-white/10">
           <label className="text-xs font-bold text-gray-400 uppercase tracking-widest"><Type size={12}/> Front</label>
-          <input value={front} onChange={(e) => setFront(e.target.value)} className="w-full p-2 outline-none text-lg" placeholder="Question..." />
+          <textarea value={front} onChange={(e) => setFront(e.target.value)} className="w-full p-2 text-white outline-none text-lg" placeholder="Question..." />
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-gray-200">
+        <div className="bg-[#171717] p-4 rounded-2xl border border-white/10">
           <label className="text-xs font-bold text-gray-400 uppercase tracking-widest"><FileText size={12}/> Back</label>
-          <textarea value={back} onChange={(e) => setBack(e.target.value)} className="w-full p-2 outline-none text-lg resize-none h-24" placeholder="Answer..." />
+          <textarea value={back} onChange={(e) => setBack(e.target.value)} className="w-full text-white p-2 outline-none text-lg resize-none h-24" placeholder="Answer..." />
         </div>
 
-        <button type="submit" disabled={loading} className="w-full py-4 bg-blue-500 text-white font-bold rounded-2xl">
+        <button type="submit" disabled={loading} className="w-full py-4 bg-white text-black font-bold rounded-2xl">
           {loading ? 'Uploading...' : 'Create Card'}
         </button>
       </form>

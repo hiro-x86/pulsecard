@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase'; 
 import { collection, query, where, getDocs, doc, updateDoc, increment } from 'firebase/firestore';
-import { Plus,ArrowLeft } from 'lucide-react';
+import { Plus, ChevronLeft} from 'lucide-react';
 
 const Flashcard = ({ user }) => { // 1. Receive User Prop
   const { topicId, courseId } = useParams();
@@ -77,16 +77,16 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
   }
 };
 
-  if (loading) return <div className="flex h-screen bg-[#FAFAFA] items-center justify-center">Loading Cards...</div>;
+  if (loading) return <div className="flex h-screen bg-[#050505] items-center text-white justify-center">Loading Cards...</div>;
 
   const currentCard = cards[currentIndex];
 
   return (
-    <div className="relative min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center p-6 text-gray-950">
+    <div className="relative min-h-screen  bg-[#050505] flex flex-col items-center justify-center p-6 text-gray-100">
 
-      <div className=" fixed top-2 left-2 text-gray-900 bg-transparent border border-gray-100 flex items-center gap-2  shadow-xl rounded-full p-1 transition-colors mb-4 group">
+      <div className=" fixed top-2 left-2 text-gray-100 bg-[#171717] border border-white/10 flex items-center gap-2  shadow-xl rounded-full p-1 transition-colors mb-4 group">
         <button onClick={() => navigate(-1)} className="p-2 bg-transparent rounded-full">
-          <ArrowLeft size={24} />
+          <ChevronLeft size={24} />
         </button>
       </div>
       
@@ -108,8 +108,8 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
             onClick={() => setIsFlipped(!isFlipped)}
             className="relative w-full max-w-md h-80 cursor-pointer perspective-1000 group"
           >
-            <div className={`relative w-full h-full transition-all duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-              <div className={`absolute inset-0 ${currentCard.color} shadow-2xl  flex items-center justify-center p-8 backface-hidden `}>
+            <div className={`relative w-full  h-full transition-all duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+              <div className={`absolute inset-0 rounded-xl bg-[#171717] backdrop-blur-md border border-white/10 text-white shadow-2xl  flex items-center justify-center p-8 backface-hidden `}>
                 {currentCard.imageUrl && (
                   <div className="w-full h-40 mb-4 overflow-hidden rounded-lg">
                     <img 
@@ -119,10 +119,10 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
                     />
                   </div>
                 )}
-                <p className="text-[18px] md:text-2xl text-center font-bold text-black">{currentCard.question}</p>
-                <p className="absolute bottom-4 text-xs text-slate-400 font-bold uppercase tracking-widest">Tap to Flip</p>
+                <p className="text-[18px] pt-3 overflow-y-auto custom-scrollbar whitespace-pre-wrap md:text-2xl text-center font-bold">{currentCard.question}</p>
+                <p className="absolute bottom-4 text-xs text-gray-400 font-bold uppercase tracking-widest">Tap to Flip</p>
               </div>
-              <div className={`absolute inset-0 ${currentCard.color} text-black shadow-2xl  flex items-center justify-center p-8 backface-hidden rotate-y-180`}>
+              <div className={`absolute  inset-0 overflow-y-auto custom-scrollbar whitespace-pre-wrap text-white shadow-2xl rounded-xl bg-[#171717] backdrop-blur-md border border-white/10 flex items-center justify-center p-8 backface-hidden rotate-y-180`}>
                 <p className="text-[18px] md:text-xl text-center font-medium leading-relaxed">{currentCard.answer}</p>
               </div>
             </div>
@@ -132,13 +132,13 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
             <button 
               disabled={currentIndex === 0}
               onClick={() => { setCurrentIndex(prev => prev - 1); setIsFlipped(false); }}
-              className="px-6 py-3 bg-slate-800 text-white rounded-xl shadow hover:bg-slate-700 disabled:opacity-30 transition-colors font-bold"
+              className="px-6 py-3 bg-[#171717] border border-white/10 text-white rounded-xl shadow hover:bg-slate-700 disabled:opacity-30 transition-colors font-bold"
             >
               Previous
             </button>
             <button 
               onClick={handleNextCard}
-              className="px-6 py-3 bg-blue-500 hover:bg-blue-400 text-white rounded-xl shadow-lg shadow-blue-500/30 transition-all transform active:scale-95 font-bold"
+              className="px-6 py-3 bg-white  text-black rounded-xl shadow-lg shadow-white/30  transition-all transform active:scale-95 font-bold"
             >
               {currentIndex === cards.length - 1 ? 'Finish Set' : 'Next Card'}
             </button>
@@ -152,7 +152,7 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
           e.stopPropagation();
           navigate(`/add-flashcard/${courseId}/${topicId}`);
         }}
-        className="fixed top-5 right-2 w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-1000"
+        className="fixed top-3 right-2 w-12 h-12 bg-[#171717] border border-white/10  text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-1000"
       >
         <Plus size={32} />
       </button>
