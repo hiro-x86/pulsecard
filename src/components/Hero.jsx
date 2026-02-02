@@ -56,7 +56,7 @@ const Hero = () => {
       
         <h1
           ref={brandRef}
-          className='font-medium text-6xl  tracking-normal font-["Inter Tight"] md:text-[100px] text-white uppercase mb-2'
+          className='font-medium text-5xl  tracking-normal font-["Inter Tight"] md:text-[100px] text-white uppercase mb-2'
         >
           pulsecard
         </h1>
