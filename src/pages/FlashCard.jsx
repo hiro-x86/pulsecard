@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase'; 
 import { collection, query, where, getDocs, doc, updateDoc, increment } from 'firebase/firestore';
-import { Plus, ChevronLeft} from 'lucide-react';
+import { Plus, ChevronLeft, Pencil} from 'lucide-react';
 
 const Flashcard = ({ user }) => { // 1. Receive User Prop
   const { topicId, courseId } = useParams();
@@ -110,6 +110,15 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
           >
             <div className={`relative w-full  h-full transition-all duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
               <div className={`absolute inset-0 rounded-xl bg-[#171717] backdrop-blur-md border border-white/10 text-white shadow-2xl  flex items-center justify-center p-8 backface-hidden `}>
+                 <button 
+                    onClick={(e) => {
+                    e.stopPropagation(); // Don't flip the card back when clicking edit
+                    navigate(`/edit-flashcard/${courseId}/${topicId}/${currentCard.id}`);
+                  }}
+                  className="absolute top-4 right-4 p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white"
+                >
+                  <Pencil size={18} />
+               </button>
                 {currentCard.imageUrl && (
                   <div className="w-full h-40 mb-4 overflow-hidden rounded-lg">
                     <img 
@@ -123,7 +132,15 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
                 <p className="absolute bottom-4 text-xs text-gray-400 font-bold uppercase tracking-widest">Tap to Flip</p>
               </div>
               <div className={`absolute  inset-0 overflow-y-auto custom-scrollbar whitespace-pre-wrap text-white shadow-2xl rounded-xl bg-[#171717] backdrop-blur-md border border-white/10 flex items-center justify-center p-8 backface-hidden rotate-y-180`}>
+             
                 <p className="text-[18px] md:text-xl text-center font-medium leading-relaxed">{currentCard.answer}</p>
+
+                <div className="absolute bottom-4 left-0 w-full text-center">
+                      <p className="text-[10px] text-gray-500 uppercase tracking-widest px-4">
+                            Created by: {currentCard.createdBy || 'Original Contributor'}
+                            {currentCard.lastEditedBy && ` • Edited by: ${currentCard.lastEditedBy}`}
+                      </p>
+                </div>                
               </div>
             </div>
           </div>

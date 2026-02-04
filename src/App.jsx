@@ -13,6 +13,7 @@ import SubjectSelection from './pages/SubjectSelection.jsx';
 import TopicSelection from './pages/TopicSelection.jsx';
 import Flashcard from './pages/FlashCard.jsx';
 import AddFlashcard from './pages/AddFlashcard.jsx';
+import EditFlashcard from './pages/EditFlashcard.jsx';
 
 const ProtectedRoute = ({ user, children }) => {
   // If still loading, show nothing or a spinner (handled in App component)
@@ -134,6 +135,7 @@ const App = () => {
           path="/add-flashcard/:courseId/:topicId" 
           element={<ProtectedRoute user={user}><AddFlashcard user={user} /></ProtectedRoute>} 
         />
+        <Route path="/edit-flashcard/:courseId/:topicId/:cardId" element={<ProtectedRoute user={user}><EditFlashcard user={user} /></ProtectedRoute>} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

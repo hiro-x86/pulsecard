@@ -38,6 +38,7 @@ const AVATARS = [
   '/avatars/Avatar-30.png',
   '/avatars/Avatar-31.png',
   '/avatars/Avatar-33.png',
+  '/avatars/Avatar-32.png',
   '/avatars/Avatar-34.png',
   '/avatars/Avatar-35.png',
   '/avatars/Avatar-36.png',
@@ -64,7 +65,6 @@ const SignInPage = () => {
         streak: 0,
         lastStudyDate: null,
         totalCardsRead: 0,
-        dailyGoals: { anatomy: 0, physiology: 0, biochemistry: 0 },
         dailyProgress: { anatomy: 0, physiology: 0, biochemistry: 0 }
       }, { merge: true });
     } catch {
@@ -115,7 +115,7 @@ const SignInPage = () => {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="How should we call you?"
+                placeholder="Enter a username"
                 className="w-full bg-white/5 border border-white/10 px-4 py-4 rounded-2xl text-white outline-none focus:border-blue-500 transition-all text-lg"
               />
             </div>

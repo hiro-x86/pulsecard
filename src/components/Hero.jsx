@@ -47,7 +47,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className='relative h-screen isolate w-full flex flex-col items-center bg-[#050505] justify-center px-4 overflow-hidden select-none perspective-distant'>
+    <section className='relative h-screen isolate w-full flex flex-col items-center bg-[#050505] justify-center px-4 overflow-hidden'>
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/10 blur-[100px] rounded-full" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 blur-[100px] rounded-full" />
       
@@ -74,8 +74,11 @@ const Hero = () => {
             </button>
         </Link>
       </div>
+
+    
       
     </section>
+  
   );
 }
 

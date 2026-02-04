@@ -9,11 +9,11 @@ const courseData = {
   },
   physiology: {
     title: "Physiology",
-    subjects: ["General Physiology", "Blood Physiology", "Cardiovascular"]
+    subjects: ["Intro to Physiology", "Blood Physiology", "Cardiovascular"]
   },
   biochemistry: {
     title: "Biochemistry",
-    subjects: ["Intro. To Biochemistry","Amino Acid", "Carbohydrate", "Lipid Metabolism"]
+    subjects: ["Cell Biology, PH and Buffer","Amino Acid", "Carbohydrate", "Lipid Metabolism"]
   }
 };
 
@@ -36,7 +36,6 @@ const SubjectSelection = () => {
       >
           <ChevronLeft size={25} className="text-white group-hover:-translate-x-1 transition-transform" />
       </button>
-rif
       <h1 className="text-3xl  font-bold font-['Inter Tight'] text-white mb-2">{currentCourse.title}</h1>
       <p className="text-gray-200 font-san mb-10">Select a specific subject to begin.</p>
 

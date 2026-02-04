@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db} from '../firebase'; // Ensure storage is exported from your firebase.js
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 // New imports
 import { ChevronLeft, Save, Type, FileText, Image as ImageIcon, X } from 'lucide-react';
+ // Adjust path to your auth context
 
-const CreateFlashcard = () => {
+const CreateFlashcard = ({ user }) => {
   const { topicId, courseId } = useParams(); 
   const navigate = useNavigate();
+
   
   const [front, setFront] = useState('');
   const [back, setBack] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   // Handle image selection
   const handleImageChange = (e) => {
@@ -31,19 +41,20 @@ const CreateFlashcard = () => {
     setLoading(true);
     try {
       let imageUrl = null;
+;
 
       // 1. Upload Image if one is selected
      if (imageFile) {
       const formData = new FormData();
       formData.append('file', imageFile);
-      formData.append('upload_preset', 'flashcard-img'); // Replace this
+      formData.append('upload_preset', 'flashcard-img'); 
       
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/dhhqqung3/image/upload`, 
         { method: 'POST', body: formData }
       );
       const data = await response.json();
-      imageUrl = data.secure_url; // This is the link to your image
+      imageUrl = data.secure_url; 
     }
 
       // 2. Save to Firestore
@@ -54,7 +65,8 @@ const CreateFlashcard = () => {
         imageUrl: imageUrl, 
         topic: topicId, 
         courseId: courseId,
-        color: 'bg-white', 
+        color: 'bg-white',
+        createdBy: user?.displayName || "Anonymous",
         createdAt: serverTimestamp(),
       });
 
@@ -100,12 +112,12 @@ const CreateFlashcard = () => {
 
         <div className="bg-[#171717] p-4 rounded-2xl border border-white/10">
           <label className="text-xs font-bold text-gray-400 uppercase tracking-widest"><Type size={12}/> Front</label>
-          <textarea value={front} onChange={(e) => setFront(e.target.value)} className="w-full p-2 text-white outline-none text-lg" placeholder="Question..." />
+          <textarea value={front} onChange={(e) => setFront(e.target.value)} className="w-full p-2 text-white bg-transparent outline-none text-lg" placeholder="Question..." />
         </div>
 
         <div className="bg-[#171717] p-4 rounded-2xl border border-white/10">
           <label className="text-xs font-bold text-gray-400 uppercase tracking-widest"><FileText size={12}/> Back</label>
-          <textarea value={back} onChange={(e) => setBack(e.target.value)} className="w-full text-white p-2 outline-none text-lg resize-none h-24" placeholder="Answer..." />
+          <textarea value={back} onChange={(e) => setBack(e.target.value)} className="w-full text-white p-2 bg-transparent outline-none text-lg resize-none h-24" placeholder="Answer..." />
         </div>
 
         <button type="submit" disabled={loading} className="w-full py-4 bg-white text-black font-bold rounded-2xl">
