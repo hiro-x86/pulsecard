@@ -28,8 +28,7 @@ const SubjectSelection = () => {
 
   return (
     <div className="min-h-screen bg-[#050505] p-8">
-      <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/10 blur-[100px] rounded-full pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 blur-[100px] rounded-full pointer-events-none" />
+      
       <button 
         onClick={() => navigate('/courses')}
         className="text-white bg-[#171717] border border-white/10 flex items-center gap-2  shadow-xl rounded-full p-2 transition-colors mb-4 group"

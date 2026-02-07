@@ -53,8 +53,7 @@ const TopicSelection = () => {
   return (
     <div className="min-h-screen bg-[#050505] pb-20">
       {/* Header Section */}
-      <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/10 blur-[100px] rounded-full pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 blur-[100px] rounded-full pointer-events-none" />
+
       <div className="px-4 py-4 mb-6">
         <div className="max-w-5xl mx-auto">
           <button 

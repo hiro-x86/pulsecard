@@ -5,9 +5,9 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 
 const courses = [
-  { id: 'anatomy', name: 'Anatomy', textColor: 'text-pink-800', },
-  { id: 'physiology', name: 'Physiology', textColor: 'text-yellow-400'},
-  { id: 'biochemistry', name: 'Biochemistry', textColor: 'text-green-400' },
+  { id: 'anatomy', name: 'Anatomy', textColor: 'text-red-500', glowColor: '#ef4444' },
+  { id: 'physiology', name: 'Physiology', textColor: 'text-blue-400', glowColor: '#60a5fa'},
+  { id: 'biochemistry', name: 'Biochemistry', textColor: 'text-yellow-400', glowColor: '#facc15' },
 ];
 
 const CourseSelection = ({ user, db }) => {
@@ -19,23 +19,27 @@ const CourseSelection = ({ user, db }) => {
       const today = new Date().toISOString().split('T')[0];
       const lastDate = user?.lastStudyDate;
 
-      if (lastDate !== today) {
+      if (lastDate && lastDate!== today) {
         const userRef = doc(db, "users", user.uid);
-        let currentStreak = user?.streak || 0;
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-        // If they didn't study today or yesterday, reset
-        if (lastDate !== yesterdayStr && lastDate !== null) {
-          currentStreak = 0; 
-        }
-
-        await updateDoc(userRef, {
+        let updates = {
           dailyProgress: { anatomy: 0, physiology: 0, biochemistry: 0 },
           lastStudyDate: today,
-          streak: currentStreak
-        });
+        };
+
+        // If they didn't study today or yesterday, reset
+        if (lastDate !== yesterdayStr) {
+          updates.streak = 0;
+        }
+
+        try {
+          await updateDoc(userRef, updates);
+        } catch (e) {
+          console.error("Reset Error", e);
+        }
       }
     };
     handleDailyReset();
@@ -88,7 +92,11 @@ const CourseSelection = ({ user, db }) => {
               className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-4xl flex flex-col items-center justify-center h-48 cursor-pointer hover:border-white/20 transition-colors"
             >  
               <h3 className="text-lg font-bold text-white mb-2">{course.name}</h3>
-              <span className={`${course.textColor} text-7xl font-black mb-1`}>
+              <span className={`text-7xl font-extralight font-san tracking-tighter ${course.textColor}`}
+                style={{ 
+                  textShadow: `0 0 25px ${course.glowColor}`,
+                  filter: 'brightness(1.1)'
+                }}>
                 {dailyProgress[course.id] || 0}
               </span>
               <span className="text-gray-100 text-[8px] uppercase">Cards studied today</span>
@@ -97,7 +105,7 @@ const CourseSelection = ({ user, db }) => {
         </div>
 
         <footer className="mt-12 text-center font-serif  text-gray-600 text-[14px]">
-            Made with ❤️ & ☕ by Mayorkun
+           {new Date().getFullYear()} &copy; Pulsecard . All rights reserved.
         </footer>
       </div>
     </div>

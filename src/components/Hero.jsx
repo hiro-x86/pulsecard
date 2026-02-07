@@ -63,12 +63,12 @@ const Hero = () => {
         
       </div>
 
-      <div className="fixed bottom-10 inset-x-0 flex justify-center md:static md:mt-30">
+      <div className="fixed bottom-10 inset-x-0 flex justify-center md:static md:mt-10">
           <Link to="/courses">
             <button
             ref={buttonRef}
-            className=" cursor-pointer text-white backdrop-blur-md rgba(255, 255, 255, 0.1) border-2 border-white/20 px-10 py-4
-                 flex items-center  rounded-full max-sm:px-15 gap-2 max-sm:text-[18px] text-[24px] hover:gap-3  font-extrabold">
+            className="cursor-pointer text-white backdrop-blur-md rgba(255, 255, 255, 0.1) border-2 border-white/20 px-7 py-2
+                 flex items-center rounded-full  gap-2 max-sm:text-[18px] text-[24px] hover:gap-3  font-extrabold">
             <RocketIcon className="w-5 h-5 " />
               Sign-in
             </button>
