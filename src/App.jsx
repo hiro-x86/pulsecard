@@ -52,24 +52,27 @@ const App = () => {
       // This waits for the 'SignInPage' to finish creating the doc
       unsubscribeSnapshot = onSnapshot(userRef, async (docSnap) => {
         if (docSnap.exists()) {
-          const userData = docSnap.data();
-          
+          const userData = docSnap.data();      
           // --- STREAK CHECK LOGIC ---
-          const today = new Date().toDateString();
-          const lastStudyDate = userData.lastStudyDate;
+          const today = new Date().toLocaleDateString('en-CA');
+          if (userData.lastStudyDate) {
+            const lastDate = userData.lastStudyDate;
 
-          if (lastStudyDate) {
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayString = yesterday.toDateString();
+            if (lastDate !== today) {
+              const yesterday = new Date();
+              yesterday.setDate(yesterday.getDate() - 1);
+              const yesterdayStr = yesterday.toLocaleDateString('en-CA');
 
-            // If last study wasn't today AND wasn't yesterday, reset streak
-            if (lastStudyDate !== today && lastStudyDate !== yesterdayString) {
-              // Only update if streak is not already 0 to prevent loops
-              if (userData.streak !== 0) {
-                 await updateDoc(userRef, { streak: 0 });
-                 // Local update is handled by the snapshot re-firing
+              let updates = {
+                dailyProgress: { anatomy: 0, physiology: 0, biochemistry: 0 },
+                lastStudyDate: today
+              };
+
+              if (lastDate !== yesterdayStr && userData.streak !== 0) {
+                  updates.streak = 0;
               }
+
+              await updateDoc(userRef, updates);
             }
           }
           // --- STREAK CHECK END ---

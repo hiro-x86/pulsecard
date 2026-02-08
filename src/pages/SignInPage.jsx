@@ -76,8 +76,6 @@ const SignInPage = () => {
   return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/10 blur-[100px] rounded-full" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 blur-[100px] rounded-full" />
 
       <div className="max-w-md w-full z-10">
         <div className="text-center mb-10">
@@ -90,11 +88,11 @@ const SignInPage = () => {
           {/* COMPACT AVATAR SELECTION */}
           <div className="flex justify-center items-center gap-4">
             <div className="relative group">
-              <div className="w-24 h-24 rounded-full p-1 bg-linear-to-tr from-blue-500 to-purple-500 shadow-2xl">
+              <div className="w-24 h-24 flex items-center justify-center overflow-hidden rounded-full p-1 bg-linear-to-tr from-blue-500 to-purple-500 shadow-2xl">
                 <img
                   src={selectedAvatar}
                   alt="Selected"
-                  className="w-full h-full rounded-full bg-neutral-900 object-cover"
+                  className="w-full h-full rounded-full bg-neutral-900 object-cover shrink-0"
                 />
               </div>
               <button
@@ -135,7 +133,7 @@ const SignInPage = () => {
 
       {/* AVATAR MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/60">
           <div className="bg-[#121212] border border-white/10 w-full max-w-sm rounded-[2.5rem] p-8 shadow-3xl animate-in fade-in zoom-in duration-300">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-white tracking-tight">Choose Avatar</h3>
@@ -144,10 +142,11 @@ const SignInPage = () => {
               </button>
             </div>
             
-            <div className="grid grid-cols-3 gap-4 max-h-75 overflow-y-auto p-2 scrollbar-hide">
+            <div className="grid grid-cols-3 gap-4 max-h-80 overflow-y-auto p-2 scrollbar-hide">
               {AVATARS.map((url) => (
                 <button
                   key={url}
+                  type='button'
                   onClick={() => {
                     setSelectedAvatar(url);
                     setIsModalOpen(false);

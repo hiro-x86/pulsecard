@@ -28,16 +28,17 @@ const SubjectSelection = () => {
 
   return (
     <div className="min-h-screen bg-[#050505] p-8">
-      
-      <button 
+       <button 
         onClick={() => navigate('/courses')}
         className="text-white bg-[#171717] border border-white/10 flex items-center gap-2  shadow-xl rounded-full p-2 transition-colors mb-4 group"
       >
           <ChevronLeft size={25} className="text-white group-hover:-translate-x-1 transition-transform" />
       </button>
-      <h1 className="text-3xl  font-bold font-['Inter Tight'] text-white mb-2">{currentCourse.title}</h1>
-      <p className="text-gray-200 font-san mb-10">Select a specific subject to begin.</p>
-
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-3xl  font-bold font-['Inter Tight'] text-white mb-2">{currentCourse.title}</h1>
+        <p className="text-gray-200 text-sm font-sans mb-10">Select a specific subject .</p>
+      </div>
+     <div className="max-w-5xl mx-auto">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentCourse.subjects.map((subject) => (
           <button
@@ -50,6 +51,9 @@ const SubjectSelection = () => {
           </button>
         ))}
       </div>
+            
+    </div> 
+      
     </div>
   );
 };

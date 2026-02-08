@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../firebase'; 
 import { collection, query, where, getDocs, doc, updateDoc, increment } from 'firebase/firestore';
-import { Plus, ChevronLeft, Pencil} from 'lucide-react';
+import { Plus, ChevronLeft, Pencil, ChevronRight} from 'lucide-react';
 
 const Flashcard = ({ user }) => { // 1. Receive User Prop
   const { topicId, courseId } = useParams();
@@ -37,30 +37,30 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
   }, [topicId]);
 
   // --- NEW: FUNCTION TO UPDATE STATS ---
-  const handleNextCard = async () => {
+ const handleNextCard = async () => {
   setIsFlipped(false);
-  if (currentIndex < cards.length - 1) {
-    setCurrentIndex(prev => prev + 1);
-  }
-
+  
   if (user && cards[currentIndex]) {
     const userRef = doc(db, "users", user.uid);
-    const today = new Date().toISOString().split('T')[0]; // Use YYYY-MM-DD for consistency
+    // Use the exact same date format as App.js
+    const today = new Date().toLocaleDateString('en-CA'); 
     const lastStudyDate = user.lastStudyDate;
-    
-    // Normalize courseId to match: anatomy, physiology, or biochemistry
     const courseKey = courseId.toLowerCase().trim();
 
     let streakUpdate = {};
+
+    // Only update streak if they haven't already gained a point today
     if (lastStudyDate !== today) {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().split('T')[0];
+      const yesterdayStr = yesterday.toLocaleDateString('en-CA');
 
       if (lastStudyDate === yesterdayStr) {
+        // They studied yesterday! Streak grows.
         streakUpdate = { streak: increment(1) };
       } else {
-        streakUpdate = { streak: 1 }; // Reset to 1 if they missed a day
+        // They missed a day (or are new). Start fresh at 1.
+        streakUpdate = { streak: 1 };
       }
     }
 
@@ -74,6 +74,14 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
     } catch (error) {
       console.error("Firebase Update Error:", error);
     }
+  }
+
+  // Move to next card or finish
+  if (currentIndex < cards.length - 1) {
+    setCurrentIndex(prev => prev + 1);
+  } else {
+    // Optional: Navigate back to topics when finished
+    // navigate(-1); 
   }
 };
 
@@ -131,33 +139,37 @@ const Flashcard = ({ user }) => { // 1. Receive User Prop
                 <p className="text-[18px] pt-3 overflow-y-auto custom-scrollbar whitespace-pre-wrap md:text-2xl text-center font-bold">{currentCard.question}</p>
                 <p className="absolute bottom-4 text-xs text-gray-400 font-bold uppercase tracking-widest">Tap to Flip</p>
               </div>
-              <div className={`absolute  inset-0 overflow-y-auto custom-scrollbar whitespace-pre-wrap text-white shadow-2xl rounded-xl bg-[#171717] backdrop-blur-md border border-white/10 flex items-center justify-center p-8 backface-hidden rotate-y-180`}>
+              <div className={`absolute  inset-0 overflow-y-auto custom-scrollbar whitespace-pre-wrap text-white shadow-2xl rounded-xl bg-[#171717] backdrop-blur-md border border-white/10 p-8 backface-hidden rotate-y-180`}>
+                <div className='min-h-full flex flex-col justify-between'>
              
-                <p className="text-[18px] md:text-xl text-center font-medium leading-relaxed">{currentCard.answer}</p>
+                 <p className="text-[18px] md:text-xl text-center font-medium leading-relaxed mb-12">{currentCard.answer}</p>
 
-                <div className="absolute bottom-4 left-0 w-full text-center">
-                      <p className="text-[10px] text-gray-500 uppercase tracking-widest px-4">
+                 <div className="mt-auto pt-4 w-full text-center border-t border-white/5">
+                      <p className="text-[10px] text-gray-500 uppercase tracking-[0.2em] px-4 leading-loose">
                             Created by: {currentCard.createdBy || 'Original Contributor'}
-                            {currentCard.lastEditedBy && ` • Edited by: ${currentCard.lastEditedBy}`}
+                            {currentCard.lastEditedBy && (
+                                <span className="block mt-1">Edited by: {currentCard.lastEditedBy}</span>
+                              )}
                       </p>
-                </div>                
+                 </div> 
+                </div>              
               </div>
             </div>
           </div>
 
-          <div className="flex gap-4 mt-12">
+          <div className="flex gap-35 mt-12">
             <button 
               disabled={currentIndex === 0}
               onClick={() => { setCurrentIndex(prev => prev - 1); setIsFlipped(false); }}
-              className="px-6 py-3 bg-[#171717] border border-white/10 text-white rounded-xl shadow hover:bg-slate-700 disabled:opacity-30 transition-colors font-bold"
+              className="p-4 bg-[#171717] border border-white/10 text-white rounded-full shadow hover:bg-slate-700 disabled:opacity-30 transition-colors font-bold"
             >
-              Previous
+              <ChevronLeft/>
             </button>
             <button 
               onClick={handleNextCard}
-              className="px-6 py-3 bg-white  text-black rounded-xl shadow-lg shadow-white/30  transition-all transform active:scale-95 font-bold"
+              className="p-4 bg-white  text-black rounded-full shadow-lg shadow-white/30  transition-all transform active:scale-95 font-bold"
             >
-              {currentIndex === cards.length - 1 ? 'Finish Set' : 'Next Card'}
+              {currentIndex === cards.length - 1 ? 'Done' : <ChevronRight/>}
             </button>
           </div>
         </>

@@ -45,7 +45,7 @@ const TopicSelection = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#050505] text-gray-100">
-        <div className=" text-gray-100 font-bold text-xl h-12 w-12">loading...</div>
+        <div className=" text-gray-100 font-bold text-xl">loading...</div>
       </div>
     );
   }
@@ -53,21 +53,23 @@ const TopicSelection = () => {
   return (
     <div className="min-h-screen bg-[#050505] pb-20">
       {/* Header Section */}
+       
+
+         
 
       <div className="px-4 py-4 mb-6">
-        <div className="max-w-5xl mx-auto">
-          <button 
+        <button 
             onClick={() => navigate(`/courses/${courseId}`)}
-            className="flex items-center bg-[#171717] border border-white/10 shadow-xl rounded-full p-2 text-gray-100 transition-colors mb-4 group"
+            className="flex  mt-1 items-center bg-[#171717] border border-white/10 shadow-xl rounded-full p-2 text-gray-100 transition-colors mb-4 group"
           >
-            <ChevronLeft size={25} className="group-hover:-translate-x-1 transition-transform" />
-            
+            <ChevronLeft size={25} className="group-hover:-translate-x-1 transition-transform" />            
           </button>
-
-          <h1 className="text-3xl font-black text-white font-['Inter Tight'] capitalize">
+        <div className="max-w-5xl mx-auto">
+           <h1 className="text-3xl font-black text-white font-['Inter Tight'] capitalize">
             {subjectId.replace(/-/g, ' ')}
           </h1>
           <p className="text-gray-400 mt-2">Select a deck to study</p>
+         
         </div>
       </div>
 
